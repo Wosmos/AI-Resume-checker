@@ -2,7 +2,6 @@
 
 import type { MatchJobDescriptionOutput } from "@/ai/flows/match-job-description";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Target } from "lucide-react";
 
 interface JobMatchProps {
@@ -10,10 +9,10 @@ interface JobMatchProps {
 }
 
 export function JobMatch({ match }: JobMatchProps) {
-  const scoreColor = match.compatibilityScore > 75 ? "bg-green-500" : match.compatibilityScore > 50 ? "bg-yellow-500" : "bg-red-500";
+  const scoreColor = match.compatibilityScore > 75 ? "text-green-500" : match.compatibilityScore > 50 ? "text-yellow-500" : "text-red-500";
   
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg bg-background">
       <CardHeader>
         <div className="flex items-center gap-3">
             <div className="flex-shrink-0 bg-primary/10 text-primary p-2 rounded-lg">
@@ -28,16 +27,16 @@ export function JobMatch({ match }: JobMatchProps) {
       <CardContent className="space-y-6">
         <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
           <div className="relative">
-             <span className="absolute inset-0 flex items-center justify-center text-3xl font-bold text-primary">{match.compatibilityScore}%</span>
+             <span className={`absolute inset-0 flex items-center justify-center text-3xl font-bold ${scoreColor}`}>{match.compatibilityScore}%</span>
             <svg width="120" height="120" viewBox="0 0 36 36" className="block">
               <path
-                className="stroke-current text-gray-200"
+                className="stroke-current text-gray-200 dark:text-gray-700"
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                 fill="none"
                 strokeWidth="3"
               />
               <path
-                className={`stroke-current text-primary`}
+                className={`stroke-current ${scoreColor}`}
                 strokeDasharray={`${match.compatibilityScore}, 100`}
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                 fill="none"

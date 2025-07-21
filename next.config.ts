@@ -18,6 +18,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    // This is to make `pdfjs-dist` work with Next.js
+    // It prevents errors related to canvas.
+    if (!isServer) {
+        config.resolve.alias.canvas = false;
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

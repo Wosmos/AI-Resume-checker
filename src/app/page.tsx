@@ -1,16 +1,17 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, UploadCloud } from "lucide-react";
 import { analyzeResume, type AnalyzeResumeOutput } from "@/ai/flows/analyze-resume";
 import { matchJobDescription, type MatchJobDescriptionOutput } from "@/ai/flows/match-job-description";
 import { generateImprovementSuggestions, type GenerateImprovementSuggestionsOutput } from "@/ai/flows/generate-improvement-suggestions";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
 import { Logo } from "@/components/Logo";
+import { extractTextFromPDF } from "@/lib/pdf";
 
 export type AnalysisState = {
   analysis?: AnalyzeResumeOutput;
@@ -19,17 +20,46 @@ export type AnalysisState = {
 };
 
 export default function Home() {
-  const [resume, setResume] = useState("");
+  const [resumeText, setResumeText] = useState("");
+  const [resumeFileName, setResumeFileName] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [results, setResults] = useState<AnalysisState | null>(null);
   const [isAnalyzing, startAnalyzing] = useTransition();
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        toast({
+          title: "Invalid file type",
+          description: "Please upload a PDF file.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setResumeFileName(file.name);
+      try {
+        const text = await extractTextFromPDF(file);
+        setResumeText(text);
+      } catch (error) {
+        console.error("Failed to extract text from PDF:", error);
+        toast({
+          title: "PDF Parsing Failed",
+          description: "Could not read text from the PDF. Please try another file.",
+          variant: "destructive",
+        });
+        setResumeFileName("");
+      }
+    }
+  };
 
   const handleAnalysis = () => {
-    if (!resume.trim()) {
+    if (!resumeText.trim()) {
       toast({
         title: "Resume is empty",
-        description: "Please paste your resume to get started.",
+        description: "Please upload or paste your resume to get started.",
         variant: "destructive",
       });
       return;
@@ -37,11 +67,11 @@ export default function Home() {
 
     startAnalyzing(async () => {
       try {
-        setResults(null); // Clear previous results and show loading skeletons
+        setResults(null); 
 
-        const analysisPromise = analyzeResume({ resumeText: resume });
+        const analysisPromise = analyzeResume({ resumeText: resumeText });
         const matchPromise = jobDescription.trim()
-          ? matchJobDescription({ resumeText: resume, jobDescription })
+          ? matchJobDescription({ resumeText: resumeText, jobDescription })
           : Promise.resolve(null);
         
         const [analysisResult, matchResult] = await Promise.all([analysisPromise, matchPromise]);
@@ -49,7 +79,7 @@ export default function Home() {
         const analysisResultsString = Object.values(analysisResult).join('\n\n');
 
         const suggestionsResult = await generateImprovementSuggestions({
-          resumeText: resume,
+          resumeText: resumeText,
           analysisResults: analysisResultsString,
           jobDescription: jobDescription.trim() || undefined,
         });
@@ -73,36 +103,56 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <header className="py-8">
+    <div className="flex flex-col min-h-screen bg-secondary/30">
+      <header className="py-8 bg-background shadow-sm">
         <div className="container mx-auto px-4 text-center">
           <Logo />
-          <h1 className="text-4xl font-bold tracking-tight text-primary mt-2 font-headline">
+          <h1 className="text-4xl font-bold tracking-tight text-primary mt-4 font-headline">
             ResumeRight
           </h1>
-          <p className="mt-2 text-lg text-foreground/80">
-            Get instant AI-powered feedback to land your dream job.
+          <p className="mt-2 text-lg text-foreground/70 max-w-2xl mx-auto">
+            Get instant AI-powered feedback to land your dream job. Optimize your resume for ATS and human recruiters.
           </p>
         </div>
       </header>
-      <main className="container mx-auto px-4 py-8 flex-grow">
-        <div className="w-full max-w-4xl mx-auto space-y-8">
-          <Card className="shadow-lg">
+      <main className="container mx-auto px-4 py-12 flex-grow">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          <Card className="shadow-lg col-span-1">
             <CardHeader>
-              <CardTitle className="text-2xl font-headline">Analyze Your Resume</CardTitle>
+              <CardTitle className="text-2xl font-headline">Get Started</CardTitle>
               <CardDescription>
-                Paste your resume and a job description to see your match score and get improvement tips.
+                Upload your resume and optionally a job description to begin.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div>
-                <label htmlFor="resume-input" className="font-medium text-foreground">Your Resume</label>
+                 <label htmlFor="resume-upload" className="font-medium text-foreground">Your Resume</label>
+                 <div 
+                   className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 dark:border-gray-100/25 cursor-pointer hover:border-primary"
+                   onClick={() => fileInputRef.current?.click()}
+                  >
+                   <div className="text-center">
+                     <UploadCloud className="mx-auto h-12 w-12 text-gray-400" aria-hidden="true" />
+                     <div className="mt-4 flex text-sm leading-6 text-gray-600 dark:text-gray-400">
+                       <p className="pl-1">
+                        {resumeFileName ? resumeFileName : "Upload a file or paste content below"}
+                       </p>
+                     </div>
+                     <p className="text-xs leading-5 text-gray-600 dark:text-gray-400">PDF up to 10MB</p>
+                   </div>
+                   <input id="file-upload" name="file-upload" type="file" className="sr-only" ref={fileInputRef} onChange={handleFileChange} accept=".pdf" />
+                 </div>
+              </div>
+              <div>
                 <Textarea
                   id="resume-input"
-                  placeholder="Paste your resume text here..."
-                  value={resume}
-                  onChange={(e) => setResume(e.target.value)}
-                  rows={15}
+                  placeholder="...or paste your resume text here."
+                  value={resumeText}
+                  onChange={(e) => {
+                    setResumeText(e.target.value);
+                    setResumeFileName("");
+                  }}
+                  rows={8}
                   className="mt-1"
                 />
               </div>
@@ -113,13 +163,13 @@ export default function Home() {
                   placeholder="Paste the job description here to check compatibility..."
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
-                  rows={10}
+                  rows={8}
                   className="mt-1"
                 />
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={handleAnalysis} disabled={isAnalyzing || !resume.trim()} size="lg" className="w-full sm:w-auto">
+              <Button onClick={handleAnalysis} disabled={isAnalyzing || !resumeText.trim()} size="lg" className="w-full">
                 {isAnalyzing ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
@@ -129,13 +179,27 @@ export default function Home() {
               </Button>
             </CardFooter>
           </Card>
+          
+          <div className="col-span-1">
+            <div className="sticky top-8">
+              {(isAnalyzing || results) && (
+                <ResultsDisplay results={results} isLoading={isAnalyzing} />
+              )}
+              { !isAnalyzing && !results && (
+                 <Card className="shadow-lg flex items-center justify-center h-[500px] bg-background/50">
+                    <div className="text-center text-muted-foreground p-8">
+                      <Sparkles className="mx-auto h-12 w-12 text-primary/50" />
+                      <h3 className="mt-4 text-lg font-medium">Your analysis will appear here.</h3>
+                      <p className="mt-1 text-sm">Upload your resume to get started.</p>
+                    </div>
+                  </Card>
+              )}
+            </div>
+          </div>
 
-          {(isAnalyzing || results) && (
-            <ResultsDisplay results={results} isLoading={isAnalyzing} />
-          )}
         </div>
       </main>
-       <footer className="text-center p-4 text-sm text-muted-foreground">
+       <footer className="text-center p-6 text-sm text-muted-foreground bg-background mt-8">
           <p>Powered by AI. Built with Next.js and Firebase.</p>
       </footer>
     </div>

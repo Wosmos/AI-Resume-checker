@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { JobMatch } from "./JobMatch";
 import { ResumeAnalysis } from "./ResumeAnalysis";
 import { ImprovementSuggestions } from "./ImprovementSuggestions";
+import { ScrollArea } from "./ui/scroll-area";
 
 interface ResultsDisplayProps {
   results: AnalysisState | null;
@@ -20,17 +21,19 @@ export function ResultsDisplay({ results, isLoading }: ResultsDisplayProps) {
   }
 
   return (
-    <div className="space-y-8">
-      {results.match && (
-        <JobMatch match={results.match} />
-      )}
-      {results.analysis && (
-        <ResumeAnalysis analysis={results.analysis} />
-      )}
-      {results.suggestions && (
-        <ImprovementSuggestions suggestions={results.suggestions} />
-      )}
-    </div>
+    <ScrollArea className="h-[calc(100vh-10rem)] pr-4">
+      <div className="space-y-8">
+        {results.match && (
+          <JobMatch match={results.match} />
+        )}
+        {results.analysis && (
+          <ResumeAnalysis analysis={results.analysis} />
+        )}
+        {results.suggestions && (
+          <ImprovementSuggestions suggestions={results.suggestions} />
+        )}
+      </div>
+    </ScrollArea>
   );
 }
 

@@ -13,10 +13,10 @@ export function ImprovementSuggestions({ suggestions }: ImprovementSuggestionsPr
     .filter(Boolean);
 
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg bg-background">
       <CardHeader>
         <div className="flex items-center gap-3">
-             <div className="flex-shrink-0 bg-accent text-accent-foreground p-2 rounded-lg">
+             <div className="flex-shrink-0 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300 p-2 rounded-lg">
                 <Lightbulb className="w-6 h-6" />
             </div>
             <div>
@@ -29,8 +29,8 @@ export function ImprovementSuggestions({ suggestions }: ImprovementSuggestionsPr
         <ul className="space-y-4">
           {suggestionItems.map((suggestion, index) => (
             <li key={index} className="flex items-start gap-3">
-              <div className="flex-shrink-0 mt-1 w-5 h-5 rounded-full bg-accent flex items-center justify-center">
-                <span className="text-xs font-bold text-accent-foreground">{index + 1}</span>
+              <div className="flex-shrink-0 mt-1 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                <span className="text-xs font-bold text-primary">{index + 1}</span>
               </div>
               <p className="text-foreground/90">{suggestion}</p>
             </li>

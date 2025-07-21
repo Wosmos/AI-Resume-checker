@@ -32,7 +32,7 @@ const feedbackCategories = [
 
 export function ResumeAnalysis({ analysis }: ResumeAnalysisProps) {
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg bg-background">
       <CardHeader>
         <CardTitle className="text-2xl font-headline">Resume Analysis</CardTitle>
       </CardHeader>
@@ -62,10 +62,10 @@ function FeedbackCard({ icon: Icon, title, feedback }: FeedbackCardProps) {
     const isPositive = feedback.toLowerCase().includes("good") || feedback.toLowerCase().includes("excellent") || feedback.toLowerCase().includes("strong");
 
     return (
-        <Card className="bg-background/50">
+        <Card className="bg-background/50 dark:bg-card">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg font-medium flex items-center gap-2">
-                <div className={`flex-shrink-0 ${isPositive ? 'bg-accent text-accent-foreground' : 'bg-primary/10 text-primary'} p-2 rounded-lg`}>
+                <div className={`flex-shrink-0 ${isPositive ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300' : 'bg-primary/10 text-primary'} p-2 rounded-lg`}>
                     <Icon className="w-5 h-5" />
                 </div>
                 {title}

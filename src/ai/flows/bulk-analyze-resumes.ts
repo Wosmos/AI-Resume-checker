@@ -36,7 +36,7 @@ const bulkAnalyzeResumesFlow = ai.defineFlow(
           compatibilityScore: matchResult.compatibilityScore,
           reasoning: matchResult.reasoning,
         };
-      } catch (error) => {
+      } catch (error) {
         console.error(`Failed to analyze resume: ${resume.fileName}`, error);
         // Return a result with a score of 0 to indicate failure for this specific resume
         return {

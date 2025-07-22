@@ -8,7 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { extractTextFromPDF } from '@/lib/pdf';
 import { Loader2, Sparkles, UploadCloud, FileText, CheckCircle, Award } from 'lucide-react';
-import { bulkAnalyzeResumes, type BulkAnalysisResult } from '@/ai/flows/bulk-analyze-resumes';
+import { bulkAnalyzeResumes } from '@/ai/flows/bulk-analyze-resumes';
+import type { BulkAnalysisResult } from '@/ai/schemas/bulk-analysis';
 import { Badge } from '@/components/ui/badge';
 
 type ResumeFile = {

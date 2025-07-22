@@ -12,7 +12,6 @@ export interface JobMatchProps {
 
 export interface ResultsDisplayProps {
     results: AnalysisState | null;
-    isLoading: boolean;
 }
 
 

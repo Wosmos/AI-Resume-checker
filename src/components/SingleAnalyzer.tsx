@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useTransition, useRef } from "react";
+import { useState, useTransition, useRef, lazy, Suspense } from "react";
+import dynamic from 'next/dynamic';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,9 +10,79 @@ import { Loader2, Sparkles, UploadCloud } from "lucide-react";
 import { analyzeResume } from "@/ai/flows/analyze-resume";
 import { matchJobDescription } from "@/ai/flows/match-job-description";
 import { generateImprovementSuggestions } from "@/ai/flows/generate-improvement-suggestions";
-import { ResultsDisplay } from "@/components/ResultsDisplay";
-import { extractTextFromPDF } from "@/lib/pdf";
 import type { AnalysisState } from "@/types";
+import { Skeleton } from "./ui/skeleton";
+
+// Lazy load the ResultsDisplay component
+const ResultsDisplay = dynamic(() => import('@/components/ResultsDisplay').then(mod => mod.ResultsDisplay), { 
+  suspense: true,
+  loading: () => <LoadingSkeleton /> 
+});
+
+// Lazy load the PDF parser
+const extractTextFromPDF = async (file: File) => {
+  const { extractTextFromPDF } = await import('@/lib/pdf');
+  return extractTextFromPDF(file);
+};
+
+
+function InitialStateCard() {
+    return (
+        <Card className="shadow-lg flex items-center justify-center h-[500px] bg-background/50">
+            <div className="text-center text-muted-foreground p-8">
+                <Sparkles className="mx-auto h-12 w-12 text-primary/50" />
+                <h3 className="mt-4 text-lg font-medium">Your analysis will appear here.</h3>
+                <p className="mt-1 text-sm">Upload your resume to get started.</p>
+            </div>
+        </Card>
+    )
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <Skeleton className="w-12 h-12 rounded-lg" />
+            <div className="space-y-2">
+              <Skeleton className="h-6 w-48" />
+              <Skeleton className="h-4 w-64" />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            <Skeleton className="h-28 w-28 rounded-full" />
+            <div className="w-full space-y-3">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-4/5" />
+            </div>
+          </div>
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+            <div>
+              <Skeleton className="h-6 w-40 mb-3" />
+              <div className="flex flex-wrap gap-2">
+                <Skeleton className="h-6 w-20 rounded-full" />
+                <Skeleton className="h-6 w-24 rounded-full" />
+                <Skeleton className="h-6 w-16 rounded-full" />
+              </div>
+            </div>
+            <div>
+              <Skeleton className="h-6 w-40 mb-3" />
+              <div className="flex flex-wrap gap-2">
+                <Skeleton className="h-6 w-28 rounded-full" />
+                <Skeleton className="h-6 w-20 rounded-full" />
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 
 export function SingleAnalyzer() {
   const [resumeText, setResumeText] = useState("");
@@ -121,7 +192,7 @@ export function SingleAnalyzer() {
                     </div>
                     <p className="text-xs leading-5 text-gray-600 dark:text-gray-400">PDF up to 10MB</p>
                 </div>
-                <input id="file-upload" name="file-upload" type="file" className="sr-only" ref={fileInputRef} onChange={handleFileChange} accept=".pdf" />
+                <input id="resume-upload" name="resume-upload" type="file" className="sr-only" ref={fileInputRef} onChange={handleFileChange} accept=".pdf" />
                 </div>
             </div>
             <div>
@@ -163,9 +234,11 @@ export function SingleAnalyzer() {
         
         <div className="col-span-1">
             <div className="sticky top-8">
-                {(isAnalyzing || results) && (
-                    <ResultsDisplay results={results} isLoading={isAnalyzing} />
-                )}
+              <Suspense fallback={<LoadingSkeleton />}>
+                {isAnalyzing && <LoadingSkeleton />}
+                {!isAnalyzing && results && <ResultsDisplay results={results} />}
+                {!isAnalyzing && !results && <InitialStateCard />}
+              </Suspense>
             </div>
         </div>
     </>

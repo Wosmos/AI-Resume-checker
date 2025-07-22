@@ -1,4 +1,4 @@
-import type { AnalysisState } from "@/app/page";
+import type { AnalysisState } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { JobMatch } from "./JobMatch";

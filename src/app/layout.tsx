@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { AppHeader } from '@/components/AppHeader';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'ResumeRight',
@@ -21,14 +22,21 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased h-full flex flex-col">
-        <AppHeader />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Toaster />
-         <footer className="text-center p-6 text-sm text-muted-foreground bg-background">
-            <p>Powered by AI. Built with Next.js and Firebase.</p>
-        </footer>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+          <AppHeader />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Toaster />
+          <footer className="text-center p-6 text-sm text-muted-foreground bg-background">
+              <p>Powered by AI. Built with Next.js and Firebase.</p>
+          </footer>
+        </ThemeProvider>
       </body>
     </html>
   );

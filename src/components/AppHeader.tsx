@@ -5,6 +5,7 @@ import { Logo } from "@/components/Logo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "./ThemeToggle";
 
 const navLinks = [
   { href: "/", label: "Single Resume" },
@@ -23,22 +24,25 @@ export function AppHeader() {
             ResumeRight
           </h1>
         </Link>
-        <nav className="flex items-center gap-2 sm:gap-4 rounded-full bg-secondary/80 p-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "px-4 py-2 rounded-full text-sm font-medium transition-colors",
-                pathname === link.href
-                  ? "bg-background text-primary shadow-sm"
-                  : "text-muted-foreground hover:text-primary"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex items-center gap-2">
+            <nav className="flex items-center gap-2 sm:gap-4 rounded-full bg-secondary/80 p-1">
+            {navLinks.map((link) => (
+                <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                    "px-4 py-2 rounded-full text-sm font-medium transition-colors",
+                    pathname === link.href
+                    ? "bg-background text-primary shadow-sm"
+                    : "text-muted-foreground hover:text-primary"
+                )}
+                >
+                {link.label}
+                </Link>
+            ))}
+            </nav>
+            <ThemeToggle />
+        </div>
       </div>
     </header>
   );

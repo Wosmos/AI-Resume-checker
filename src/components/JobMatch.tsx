@@ -2,7 +2,8 @@
 
 import type { MatchJobDescriptionOutput } from "@/ai/flows/match-job-description";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle2, Target, XCircle } from "lucide-react";
 
 interface JobMatchProps {
   match: MatchJobDescriptionOutput;
@@ -51,6 +52,29 @@ export function JobMatch({ match }: JobMatchProps) {
             <p className="text-muted-foreground mt-1 whitespace-pre-wrap">{match.reasoning}</p>
           </div>
         </div>
+        
+        {match.keywordComparison && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-semibold text-lg mb-3 flex items-center"><CheckCircle2 className="w-5 h-5 mr-2 text-green-500" /> Matched Keywords</h4>
+              <div className="flex flex-wrap gap-2">
+                {match.keywordComparison.matched.map(keyword => (
+                  <Badge key={keyword} variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">{keyword}</Badge>
+                ))}
+                 {match.keywordComparison.matched.length === 0 && <p className="text-sm text-muted-foreground">No keywords matched.</p>}
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-lg mb-3 flex items-center"><XCircle className="w-5 h-5 mr-2 text-red-500" /> Missing Keywords</h4>
+              <div className="flex flex-wrap gap-2">
+                {match.keywordComparison.missing.map(keyword => (
+                  <Badge key={keyword} variant="secondary" className="bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300">{keyword}</Badge>
+                ))}
+                {match.keywordComparison.missing.length === 0 && <p className="text-sm text-muted-foreground">No missing keywords found.</p>}
+              </div>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

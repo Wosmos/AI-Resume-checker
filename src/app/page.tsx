@@ -10,7 +10,6 @@ import { analyzeResume, type AnalyzeResumeOutput } from "@/ai/flows/analyze-resu
 import { matchJobDescription, type MatchJobDescriptionOutput } from "@/ai/flows/match-job-description";
 import { generateImprovementSuggestions, type GenerateImprovementSuggestionsOutput } from "@/ai/flows/generate-improvement-suggestions";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
-import { Logo } from "@/components/Logo";
 import { extractTextFromPDF } from "@/lib/pdf";
 
 export type AnalysisState = {
@@ -103,18 +102,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-secondary/30">
-      <header className="py-8 bg-background shadow-sm">
-        <div className="container mx-auto px-4 text-center">
-          <Logo />
-          <h1 className="text-4xl font-bold tracking-tight text-primary mt-4 font-headline">
-            ResumeRight
-          </h1>
-          <p className="mt-2 text-lg text-foreground/70 max-w-2xl mx-auto">
-            Get instant AI-powered feedback to land your dream job. Optimize your resume for ATS and human recruiters.
-          </p>
-        </div>
-      </header>
+    <div className="flex flex-col min-h-full bg-secondary/30">
       <main className="container mx-auto px-4 py-12 flex-grow">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
           <Card className="shadow-lg col-span-1">
@@ -199,9 +187,6 @@ export default function Home() {
 
         </div>
       </main>
-       <footer className="text-center p-6 text-sm text-muted-foreground bg-background mt-8">
-          <p>Powered by AI. Built with Next.js and Firebase.</p>
-      </footer>
     </div>
   );
 }

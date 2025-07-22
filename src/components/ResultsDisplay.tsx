@@ -5,11 +5,7 @@ import { JobMatch } from "./JobMatch";
 import { ResumeAnalysis } from "./ResumeAnalysis";
 import { ImprovementSuggestions } from "./ImprovementSuggestions";
 import { ScrollArea } from "./ui/scroll-area";
-
-interface ResultsDisplayProps {
-  results: AnalysisState | null;
-  isLoading: boolean;
-}
+import { ResultsDisplayProps } from "@/types/interface";
 
 export function ResultsDisplay({ results, isLoading }: ResultsDisplayProps) {
   if (isLoading) {

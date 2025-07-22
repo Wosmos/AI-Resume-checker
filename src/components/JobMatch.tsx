@@ -4,10 +4,8 @@ import type { MatchJobDescriptionOutput } from "@/ai/flows/match-job-description
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Target, XCircle } from "lucide-react";
+import { JobMatchProps } from "@/types/interface";
 
-interface JobMatchProps {
-  match: MatchJobDescriptionOutput;
-}
 
 export function JobMatch({ match }: JobMatchProps) {
   const scoreColor = match.compatibilityScore > 75 ? "text-green-500" : match.compatibilityScore > 50 ? "text-yellow-500" : "text-red-500";

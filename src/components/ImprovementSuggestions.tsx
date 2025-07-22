@@ -1,10 +1,7 @@
 import type { GenerateImprovementSuggestionsOutput } from "@/ai/flows/generate-improvement-suggestions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ImprovementSuggestionsProps } from "@/types/interface";
 import { Lightbulb } from "lucide-react";
-
-interface ImprovementSuggestionsProps {
-  suggestions: GenerateImprovementSuggestionsOutput;
-}
 
 export function ImprovementSuggestions({ suggestions }: ImprovementSuggestionsProps) {
   const suggestionItems = suggestions.improvementSuggestions

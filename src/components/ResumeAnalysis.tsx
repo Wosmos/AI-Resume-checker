@@ -1,5 +1,6 @@
 import type { AnalyzeResumeOutput } from "@/ai/flows/analyze-resume";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FeedbackCardProps } from "@/types/interface";
 import { FileText, LayoutTemplate, SpellCheck, ThumbsUp } from "lucide-react";
 import React from "react";
 
@@ -52,11 +53,6 @@ export function ResumeAnalysis({ analysis }: ResumeAnalysisProps) {
   );
 }
 
-interface FeedbackCardProps {
-  icon: React.ElementType;
-  title: string;
-  feedback: string;
-}
 
 function FeedbackCard({ icon: Icon, title, feedback }: FeedbackCardProps) {
     const isPositive = feedback.toLowerCase().includes("good") || feedback.toLowerCase().includes("excellent") || feedback.toLowerCase().includes("strong");

@@ -1,10 +1,9 @@
-// src/app/page.tsx
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle, Briefcase, FileText, Bot, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { AppHeader } from '@/components/AppHeader';
 
 const features = [
   {
@@ -37,19 +36,19 @@ export default function LandingPage() {
         <section className="relative py-24 sm:py-32 text-center overflow-hidden">
             <div className="absolute inset-0 bg-primary/10 [mask-image:radial-gradient(ellipse_at_top,white,transparent_70%)] dark:bg-primary/20"></div>
             <div className="container relative mx-auto px-4">
-                <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-foreground">
+                <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-foreground">
                 Land Your Dream Job with an AI-Perfected Resume
                 </h1>
-                <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+                <p className="mt-6 text-md  sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
                 ResumeRight analyzes your resume against job descriptions, providing instant feedback and actionable insights to beat applicant tracking systems.
                 </p>
                 <div className="mt-10 flex justify-center gap-4">
                 <Button asChild size="lg">
                     <Link href="/signup">Get Started for Free <ArrowRight className="ml-2"/></Link>
                 </Button>
-                <Button asChild size="lg" variant="outline">
+                {/* <Button asChild size="lg" variant="outline">
                     <Link href="/login">Log In</Link>
-                </Button>
+                </Button> */}
                 </div>
             </div>
         </section>
@@ -115,12 +114,28 @@ export default function LandingPage() {
                 <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
                     Stop guessing and start getting interviews. Let our AI give you the edge you need to land your next role.
                 </p>
-                <div className="mt-8">
+                
+                <div className="my-8">
                     <Button asChild size="lg">
-                        <Link href="/signup">Get Started for Free <ArrowRight className="ml-2"/></Link>
+                        <Link href="/">Get Started for Free <ArrowRight className="ml-2"/></Link>
                     </Button>
                 </div>
+                <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-sm opacity-80">
+              <div className="flex items-center">
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Free forever plan
+              </div>
+              <div className="flex items-center">
+                <CheckCircle className="w-4 h-4 mr-2" />
+                No credit card required
+              </div>
+              <div className="flex items-center">
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Instant results
+              </div>
             </div>
+            </div>
+           
         </section>
       </main>
     </div>

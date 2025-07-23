@@ -1,6 +1,5 @@
 // src/components/AppHeader.tsx
 "use client";
-
 import { Logo } from "@/components/Logo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -11,7 +10,8 @@ import { Button } from "./ui/button";
 import { getAuth, signOut } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
 
 const navLinks = [
   { href: "/dashboard", label: "Single Resume" },
@@ -23,7 +23,7 @@ export function AppHeader() {
   const { user, loading } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
-
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -33,8 +33,12 @@ export function AppHeader() {
     } catch (error) {
       toast({ title: "Failed to sign out", variant: "destructive" });
     }
+    setIsMobileMenuOpen(false);
   };
 
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <header className="py-4 bg-background shadow-sm sticky top-0 z-40">
@@ -45,30 +49,34 @@ export function AppHeader() {
             ResumeRight
           </h1>
         </Link>
+
         <div className="flex items-center gap-2">
-            {user && (
-              <nav className="flex items-center gap-2 sm:gap-4 rounded-full bg-secondary/80 p-1">
+          {user && (
+            <nav className="flex items-center gap-2 sm:gap-4 rounded-full bg-secondary/80 p-1">
               {navLinks.map((link) => (
-                  <Link
+                <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                      "px-4 py-2 rounded-full text-sm font-medium transition-colors",
-                      pathname === link.href
+                    "px-4 py-2 rounded-full text-sm font-medium transition-colors",
+                    pathname === link.href
                       ? "bg-background text-primary shadow-sm"
                       : "text-muted-foreground hover:text-primary"
                   )}
-                  >
+                >
                   {link.label}
-                  </Link>
+                </Link>
               ))}
-              </nav>
-            )}
+            </nav>
+          )}
+
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
-             {!loading && (
+            {!loading && (
               <div className="flex items-center gap-2">
                 {user ? (
-                   <Button onClick={handleSignOut} variant="outline">Sign Out</Button>
+                  <Button onClick={handleSignOut} variant="outline">Sign Out</Button>
                 ) : (
                   <>
                     <Button asChild variant="ghost">
@@ -81,7 +89,63 @@ export function AppHeader() {
                 )}
               </div>
             )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </Button>
+          </div>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {isMobileMenuOpen && (
+          <div className="absolute top-full left-0 right-0 bg-background border-b shadow-lg md:hidden">
+            <div className="container mx-auto px-4 py-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-muted-foreground">Theme</span>
+                <ThemeToggle />
+              </div>
+              
+              {!loading && (
+                <div className="space-y-2">
+                  {user ? (
+                    <Button 
+                      onClick={handleSignOut} 
+                      variant="outline" 
+                      className="w-full"
+                    >
+                      Sign Out
+                    </Button>
+                  ) : (
+                    <div className="space-y-2">
+                      <Button asChild variant="ghost" className="w-full">
+                        <Link href="/login" onClick={closeMobileMenu}>
+                          Log In
+                        </Link>
+                      </Button>
+                      <Button asChild className="w-full">
+                        <Link href="/signup" onClick={closeMobileMenu}>
+                          Sign Up
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

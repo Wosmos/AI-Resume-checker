@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { AppHeader } from '@/components/AppHeader';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { AuthProvider } from '@/components/auth/AuthProvider';
+import Footer from '@/components/Footer';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -61,9 +62,7 @@ export default function RootLayout({
                     {children}
                 </main>
                 <Toaster />
-                <footer className="text-center p-6 text-sm text-muted-foreground bg-secondary/10">
-                    <p>Powered by AI. Built with Next.js and Firebase.</p>
-                </footer>
+                <Footer/>
             </ThemeProvider>
         </AuthProvider>
       </body>

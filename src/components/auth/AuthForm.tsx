@@ -47,11 +47,11 @@ export function AuthForm({ mode }: AuthFormProps) {
       if (mode === 'signup') {
         await createUserWithEmailAndPassword(auth, values.email, values.password);
         toast({ title: 'Account created successfully!', description: "You've been signed in." });
-        router.push('/');
+        router.push('/dashboard');
       } else if (mode === 'login') {
         await signInWithEmailAndPassword(auth, values.email, values.password);
         toast({ title: 'Signed in successfully!' });
-        router.push('/');
+        router.push('/dashboard');
       } else if (mode === 'forgot-password') {
         await sendPasswordResetEmail(auth, values.email);
         toast({ title: 'Password reset email sent!', description: 'Please check your inbox.' });

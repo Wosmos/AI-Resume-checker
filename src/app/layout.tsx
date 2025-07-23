@@ -61,7 +61,7 @@ export default function RootLayout({
                     {children}
                 </main>
                 <Toaster />
-                <footer className="text-center p-6 text-sm text-muted-foreground bg-background">
+                <footer className="text-center p-6 text-sm text-muted-foreground bg-secondary/10">
                     <p>Powered by AI. Built with Next.js and Firebase.</p>
                 </footer>
             </ThemeProvider>

@@ -1,3 +1,4 @@
+// src/components/BulkAnalyzer.tsx
 "use client";
 
 import { useState, useTransition, useRef } from 'react';
@@ -6,11 +7,40 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { extractTextFromPDF } from '@/lib/pdf';
-import { Loader2, Sparkles, UploadCloud, FileText, Award } from 'lucide-react';
+import { Loader2, Sparkles, UploadCloud, FileText, Award, Lock } from 'lucide-react';
 import { bulkAnalyzeResumes } from '@/ai/flows/bulk-analyze-resumes';
 import type { BulkAnalysisResult } from '@/ai/schemas/bulk-analysis';
 import type { ResumeFile } from '@/types';
 import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/hooks/useAuth';
+import { Skeleton } from './ui/skeleton';
+import Link from 'next/link';
+
+function AuthCTA() {
+  return (
+    <Card className="max-w-4xl mx-auto shadow-lg text-center">
+        <CardHeader>
+            <div className="mx-auto bg-primary/10 text-primary p-3 rounded-full">
+                <Lock className="w-8 h-8" />
+            </div>
+            <CardTitle className="text-2xl font-headline mt-4">Feature Locked</CardTitle>
+            <CardDescription>
+                Please log in or create an account to use the Bulk Analyzer.
+            </CardDescription>
+        </CardHeader>
+        <CardContent>
+             <div className="mt-2 flex items-center justify-center gap-4">
+                <Button asChild>
+                    <Link href="/login">Log In</Link>
+                </Button>
+                <Button asChild variant="outline">
+                    <Link href="/signup">Sign Up</Link>
+                </Button>
+            </div>
+        </CardContent>
+    </Card>
+  );
+}
 
 export function BulkAnalyzer() {
   const [jobDescription, setJobDescription] = useState('');
@@ -19,6 +49,8 @@ export function BulkAnalyzer() {
   const [isAnalyzing, startAnalyzing] = useTransition();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user, loading } = useAuth();
+
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -95,6 +127,28 @@ export function BulkAnalyzer() {
   const clearResumes = () => {
     setResumeFiles([]);
   };
+
+   if (loading) {
+    return (
+        <Card className="max-w-4xl mx-auto shadow-lg animate-pulse">
+            <CardHeader>
+                <Skeleton className="h-8 w-3/5" />
+                <Skeleton className="h-4 w-4/5" />
+            </CardHeader>
+            <CardContent className="space-y-6">
+                 <Skeleton className="h-24 w-full" />
+                 <Skeleton className="h-32 w-full" />
+            </CardContent>
+            <CardFooter>
+                <Skeleton className="h-12 w-full" />
+            </CardFooter>
+        </Card>
+    )
+  }
+
+  if (!user) {
+      return <AuthCTA />
+  }
 
   return (
     <>
@@ -228,3 +282,4 @@ export function BulkAnalyzer() {
     </>
   );
 }
+    

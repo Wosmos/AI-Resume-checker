@@ -21,3 +21,7 @@ export interface FeedbackCardProps {
   title: string;
   feedback: string;
 }
+
+export interface AuthFormProps {
+    mode: 'login' | 'signup' | 'forgot-password';
+}

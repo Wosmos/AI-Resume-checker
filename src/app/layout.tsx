@@ -4,6 +4,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { AppHeader } from '@/components/AppHeader';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { AuthProvider } from '@/components/auth/AuthProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -48,21 +49,23 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} h-full`} suppressHydrationWarning>
       <head />
       <body className="font-body antialiased h-full flex flex-col">
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-          <AppHeader />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Toaster />
-          <footer className="text-center p-6 text-sm text-muted-foreground bg-background">
-              <p>Powered by AI. Built with Next.js and Firebase.</p>
-          </footer>
-        </ThemeProvider>
+        <AuthProvider>
+            <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+            >
+                <AppHeader />
+                <main className="flex-grow">
+                    {children}
+                </main>
+                <Toaster />
+                <footer className="text-center p-6 text-sm text-muted-foreground bg-background">
+                    <p>Powered by AI. Built with Next.js and Firebase.</p>
+                </footer>
+            </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

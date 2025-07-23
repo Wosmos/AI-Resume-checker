@@ -6,6 +6,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "./ui/button";
+import { getAuth, signOut } from "firebase/auth";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+
 
 const navLinks = [
   { href: "/", label: "Single Resume" },
@@ -14,6 +20,21 @@ const navLinks = [
 
 export function AppHeader() {
   const pathname = usePathname();
+  const { user, loading } = useAuth();
+  const { toast } = useToast();
+  const router = useRouter();
+
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(getAuth());
+      toast({ title: "Signed out successfully" });
+      router.push('/');
+    } catch (error) {
+      toast({ title: "Failed to sign out", variant: "destructive" });
+    }
+  };
+
 
   return (
     <header className="py-4 bg-background shadow-sm sticky top-0 z-40">
@@ -42,6 +63,22 @@ export function AppHeader() {
             ))}
             </nav>
             <ThemeToggle />
+             {!loading && (
+              <div className="flex items-center gap-2">
+                {user ? (
+                   <Button onClick={handleSignOut} variant="outline">Sign Out</Button>
+                ) : (
+                  <>
+                    <Button asChild variant="ghost">
+                      <Link href="/login">Log In</Link>
+                    </Button>
+                    <Button asChild>
+                      <Link href="/signup">Sign Up</Link>
+                    </Button>
+                  </>
+                )}
+              </div>
+            )}
         </div>
       </div>
     </header>
